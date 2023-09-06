@@ -17,6 +17,7 @@ brews:
     homepage: https://github.com/furkanuyank/Youtool
     tap:
       owner: furkanuyank
+      name: homebrew-fu
     commit_author:
       name: furkanuyank
       email: fu.uyanik@gmail.com

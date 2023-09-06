@@ -1,0 +1,24 @@
+builds:
+  - binary: youtool
+  - goos:
+      - darwin
+      - linux
+  - goarch:
+      - amd64
+      - arm65
+    env:
+      - CGO_ENABLED=0
+
+release:
+  prerelease: auto
+
+brews:
+  - name: youtool
+    homepage: https://github.com/furkanuyank/Youtool
+    tap:
+      owner: furkanuyank
+    commit_author:
+      name: furkanuyank
+      email: fu.uyanik@gmail.com
+checksum:
+  name_template: "checksum.txt"

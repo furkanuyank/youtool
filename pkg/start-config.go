@@ -6,7 +6,7 @@ const (
 
 	//Out directory
 	OUTDIRKEY          string = "OUT_DIR"
-	OUTDIRDEFAULTVALUE string = "./"
+	OUTDIRDEFAULTVALUE string = "~/"
 )
 
 // In App Enviroment Values

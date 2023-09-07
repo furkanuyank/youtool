@@ -1,4 +1,4 @@
-module github/furkanuyank/youtube-download-cli
+module github/furkanuyank/youtool
 
 go 1.21.1
 

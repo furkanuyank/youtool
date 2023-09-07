@@ -1,6 +1,6 @@
 package main
 
-import "github/furkanuyank/youtube-download-cli/cmd"
+import cmd "github/furkanuyank/youtool/cmd"
 
 func main() {
 	cmd.Execute()

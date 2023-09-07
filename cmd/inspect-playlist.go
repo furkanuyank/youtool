@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github/furkanuyank/youtube-download-cli/pkg"
+	pkg "github/furkanuyank/youtool/pkg"
 
 	"github.com/spf13/cobra"
 )

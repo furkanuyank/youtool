@@ -9,29 +9,36 @@ import (
 	"github.com/kkdai/youtube/v2"
 )
 
-func DownloadVideo(URL string, name string, extension string) {
+func DownloadVideo(URL string, name string, extension string, notification bool) {
 	video, downloader := getVideoAndDownloader(URL)
 	title := setTitle(name, extension, video.Title, "mp4")
+	if notification {
+		defer DownloadNotification(title)
+	}
 	err := downloader.Download(context.Background(), video, &video.Formats.WithAudioChannels().Type("video")[0], title)
 	if err != nil {
 		log.Fatal("Download error: ", err)
 	}
+
 }
 
-func DownloadVideoWithQuality(URL string, q string, name string, extension string) {
+func DownloadVideoWithQuality(URL string, q string, name string, extension string, notification bool) {
 	video, downloader := getVideoAndDownloader(URL)
 	format, err := getVideoFormatWithQuality(*video, q)
 	if err != nil {
 		log.Fatal("Format error: ", err)
 	}
 	title := setTitle(name, extension, video.Title, "mp4")
+	if notification {
+		defer DownloadNotification(title)
+	}
 	err = downloader.Download(context.Background(), video, format, title)
 	if err != nil {
 		log.Fatal("Download error: ", err)
 	}
 }
 
-func DownloadVideoWithItag(URL string, i int, name string, extension string) {
+func DownloadVideoWithItag(URL string, i int, name string, extension string, notification bool) {
 	video, downloader := getVideoAndDownloader(URL)
 	format, err := getFormatWithItag(*video, i)
 	if err != nil {
@@ -39,32 +46,41 @@ func DownloadVideoWithItag(URL string, i int, name string, extension string) {
 	}
 	l := strings.Index(format.MimeType, ";")
 	title := setTitle(name, extension, video.Title, format.MimeType[6:l])
+	if notification {
+		defer DownloadNotification(title)
+	}
 	err = downloader.Download(context.Background(), video, format, title)
 	if err != nil {
 		log.Fatal("Download error: ", err)
 	}
 }
 
-func DownloadVideoAudio(URL string, name string, extension string) {
+func DownloadVideoAudio(URL string, name string, extension string, notification bool) {
 	video, downloader := getVideoAndDownloader(URL)
 	format, err := getAudioFormat(*video)
 	if err != nil {
 		log.Fatalf("Format error: ", err)
 	}
 	title := setTitle(name, extension, video.Title, "mp3")
+	if notification {
+		defer DownloadNotification(title)
+	}
 	err = downloader.Download(context.Background(), video, format, title)
 	if err != nil {
 		log.Fatal("Download error: ", err)
 	}
 }
 
-func DownloadVideoMuted(URL string, name string, extension string) {
+func DownloadVideoMuted(URL string, name string, extension string, notification bool) {
 	video, downloader := getVideoAndDownloader(URL)
 	format, err := getMutedVideoFormat(*video)
 	if err != nil {
 		log.Fatalf("Format error: ", err)
 	}
 	title := setTitle(name, extension, video.Title, "mp4")
+	if notification {
+		defer DownloadNotification(title)
+	}
 	err = downloader.Download(context.Background(), video, format, title)
 	if err != nil {
 		log.Fatal("Download error: ", err)

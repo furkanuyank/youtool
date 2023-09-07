@@ -1,17 +1,17 @@
 package pkg
 
 const (
-	//Enviroment Paths
-	CONFIGENVPATH string = "config.env"
+	CONFIGENVNAME string = ".youtoolconfig"
 
-	//Out directory
-	OUTDIRKEY          string = "OUT_DIR"
-	OUTDIRDEFAULTVALUE string = "~/"
+	OUTDIRKEY string = "OUT_DIR"
 )
 
-// In App Enviroment Values
 var (
-	OUTDIR = GetEnvValue(CONFIGENVPATH, OUTDIRKEY)
+	HOMEDIR       = getHomeDir()
+	CONFIGENVPATH = HOMEDIR + "/" + CONFIGENVNAME
+
+	OUTDIRDEFAULTVALUE = HOMEDIR
+	OUTDIR             = GetEnvValue(CONFIGENVPATH, OUTDIRKEY)
 )
 
 // Default Enviroment Values

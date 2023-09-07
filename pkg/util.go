@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -11,8 +12,20 @@ import (
 	"github.com/kkdai/youtube/v2/downloader"
 )
 
-func SetOutdirInApp(newPath string) {
-	OUTDIR = newPath
+func DownloadNotification(title string) {
+	fmt.Printf("%v has been downloaded to %s\n", title, OUTDIR)
+}
+
+func SetOutdirInApp(newValue string) {
+	OUTDIR = newValue
+}
+
+func getHomeDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return home
 }
 
 func GetEnvLines(path string) []string {

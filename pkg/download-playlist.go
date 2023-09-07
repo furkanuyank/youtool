@@ -1,11 +1,9 @@
 package pkg
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 	"sync"
 )
 
@@ -70,14 +68,14 @@ func downloadPlaylistAll(URL string, sim bool, extension string) {
 			videoId := v.ID
 			go func(id string) {
 				defer wg.Done()
-				DownloadVideo(videoId, "", extension)
+				DownloadVideo(videoId, "", extension, false)
 			}(videoId)
 		}
 		wg.Wait()
 	} else {
 		for _, v := range playlist.Videos {
 			videoId := v.ID
-			DownloadVideo(videoId, "", extension)
+			DownloadVideo(videoId, "", extension, true)
 		}
 	}
 }
@@ -92,14 +90,14 @@ func downloadPlaylistAudioAll(URL string, sim bool, extension string) {
 			videoId := v.ID
 			go func(id string) {
 				defer wg.Done()
-				DownloadVideoAudio(videoId, "", extension)
+				DownloadVideoAudio(videoId, "", extension, false)
 			}(videoId)
 		}
 		wg.Wait()
 	} else {
 		for _, v := range playlist.Videos {
 			videoId := v.ID
-			DownloadVideoAudio(videoId, "", extension)
+			DownloadVideoAudio(videoId, "", extension, true)
 		}
 	}
 }
@@ -114,20 +112,20 @@ func downloadPlaylistMutedAll(URL string, sim bool, extension string) {
 			videoId := v.ID
 			go func(id string) {
 				defer wg.Done()
-				DownloadVideoMuted(videoId, "", extension)
+				DownloadVideoMuted(videoId, "", extension, false)
 			}(videoId)
 		}
 		wg.Wait()
 	} else {
 		for _, v := range playlist.Videos {
 			videoId := v.ID
-			DownloadVideoMuted(videoId, "", extension)
+			DownloadVideoMuted(videoId, "", extension, true)
 		}
 	}
 }
 
 func downloadPlaylistSelected(URL string, numbers []string, sim bool, name string, extension string) {
-	playlist, downloader := getPlaylistAndDownloader(URL)
+	playlist := getPlaylist(URL)
 	var validNumbers []int
 	for _, v := range numbers {
 		n, err := strconv.Atoi(v)
@@ -144,36 +142,22 @@ func downloadPlaylistSelected(URL string, numbers []string, sim bool, name strin
 		wg.Add(len(validNumbers))
 		for _, v := range validNumbers {
 			videoId := playlist.Videos[v-1].ID
-			video, err := downloader.GetVideo(videoId)
-			if err != nil {
-				log.Fatal(err)
-			}
-			format := &video.Formats.WithAudioChannels().Type("video")[0]
-			l := strings.Index(format.MimeType, ";")
-			title := setTitle(name, extension, video.Title, format.MimeType[6:l])
 			go func() {
+				DownloadVideo(videoId, "", extension, false)
 				defer wg.Done()
-				downloader.Download(context.Background(), video, format, title)
 			}()
 		}
 		wg.Wait()
 	} else {
 		for _, v := range validNumbers {
 			videoId := playlist.Videos[v-1].ID
-			video, err := downloader.GetVideo(videoId)
-			if err != nil {
-				log.Fatal(err)
-			}
-			format := &video.Formats.WithAudioChannels().Type("video")[0]
-			l := strings.Index(format.MimeType, ";")
-			title := setTitle(name, extension, video.Title, format.MimeType[6:l])
-			downloader.Download(context.Background(), video, format, title)
+			DownloadVideo(videoId, "", extension, true)
 		}
 	}
 }
 
 func downloadPlaylistAudioSelected(URL string, numbers []string, sim bool, name string, extension string) {
-	playlist, downloader := getPlaylistAndDownloader(URL)
+	playlist := getPlaylist(URL)
 	var validNumbers []int
 	for _, v := range numbers {
 		n, err := strconv.Atoi(v)
@@ -190,42 +174,22 @@ func downloadPlaylistAudioSelected(URL string, numbers []string, sim bool, name 
 		wg.Add(len(validNumbers))
 		for _, v := range validNumbers {
 			videoId := playlist.Videos[v-1].ID
-			video, err := downloader.GetVideo(videoId)
-			if err != nil {
-				log.Fatal(err)
-			}
-			format, err := getAudioFormat(*video)
-			if err != nil {
-				log.Fatalf("Format error: ", err)
-			}
-			l := strings.Index(format.MimeType, ";")
-			title := setTitle(name, extension, video.Title, format.MimeType[6:l])
 			go func() {
+				DownloadVideo(videoId, "", extension, false)
 				defer wg.Done()
-				downloader.Download(context.Background(), video, format, title)
 			}()
 		}
 		wg.Wait()
 	} else {
 		for _, v := range validNumbers {
 			videoId := playlist.Videos[v-1].ID
-			video, err := downloader.GetVideo(videoId)
-			if err != nil {
-				log.Fatal(err)
-			}
-			format, err := getAudioFormat(*video)
-			if err != nil {
-				log.Fatalf("Format error: ", err)
-			}
-			l := strings.Index(format.MimeType, ";")
-			title := setTitle(name, extension, video.Title, format.MimeType[6:l])
-			downloader.Download(context.Background(), video, format, title)
+			DownloadVideo(videoId, "", extension, true)
 		}
 	}
 }
 
 func downloadPlaylistMutedSelected(URL string, numbers []string, sim bool, name string, extension string) {
-	playlist, downloader := getPlaylistAndDownloader(URL)
+	playlist := getPlaylist(URL)
 	var validNumbers []int
 	for _, v := range numbers {
 		n, err := strconv.Atoi(v)
@@ -242,36 +206,16 @@ func downloadPlaylistMutedSelected(URL string, numbers []string, sim bool, name 
 		wg.Add(len(validNumbers))
 		for _, v := range validNumbers {
 			videoId := playlist.Videos[v-1].ID
-			video, err := downloader.GetVideo(videoId)
-			if err != nil {
-				log.Fatal(err)
-			}
-			format, err := getMutedVideoFormat(*video)
-			if err != nil {
-				log.Fatalf("Format error: ", err)
-			}
-			l := strings.Index(format.MimeType, ";")
-			title := setTitle(name, extension, video.Title, format.MimeType[6:l])
 			go func() {
+				DownloadVideo(videoId, "", extension, false)
 				defer wg.Done()
-				downloader.Download(context.Background(), video, format, title)
 			}()
 		}
 		wg.Wait()
 	} else {
 		for _, v := range validNumbers {
 			videoId := playlist.Videos[v-1].ID
-			video, err := downloader.GetVideo(videoId)
-			if err != nil {
-				log.Fatal(err)
-			}
-			format, err := getMutedVideoFormat(*video)
-			if err != nil {
-				log.Fatalf("Format error: ", err)
-			}
-			l := strings.Index(format.MimeType, ";")
-			title := setTitle(name, extension, video.Title, format.MimeType[6:l])
-			downloader.Download(context.Background(), video, format, title)
+			DownloadVideo(videoId, "", extension, true)
 		}
 	}
 }

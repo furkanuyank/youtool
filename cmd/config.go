@@ -41,8 +41,8 @@ var configOutDirCmd = &cobra.Command{
 			fmt.Println(pkg.OUTDIRKEY + "=" + pkg.OUTDIR)
 		} else {
 			if len(args) == 0 {
-				pkg.SetEnvValue(pkg.CONFIGENVPATH, pkg.OUTDIRKEY, "./")
-				fmt.Println("Out Directory is set './' by default")
+				pkg.SetEnvValue(pkg.CONFIGENVPATH, pkg.OUTDIRKEY, pkg.OUTDIRDEFAULTVALUE)
+				fmt.Printf("Out Directory is set '%v' by default\n", pkg.OUTDIRDEFAULTVALUE)
 			} else {
 				pkg.SetEnvValue(pkg.CONFIGENVPATH, pkg.OUTDIRKEY, args[0])
 				fmt.Printf("Out Directory is set '%v' by default\n", args[0])

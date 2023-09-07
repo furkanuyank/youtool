@@ -22,15 +22,15 @@ var cmdDownloadVideo = &cobra.Command{
 			pkg.SetOutdirInApp(downloadOutdir)
 		}
 		if downloadItag != 0 {
-			pkg.DownloadVideoWithItag(args[0], downloadItag, name, extension)
+			pkg.DownloadVideoWithItag(args[0], downloadItag, name, extension, true)
 		} else if downloadQuality != "" {
-			pkg.DownloadVideoWithQuality(args[0], downloadQuality, name, extension)
+			pkg.DownloadVideoWithQuality(args[0], downloadQuality, name, extension, true)
 		} else if downloadAudio {
-			pkg.DownloadVideoAudio(args[0], name, extension)
+			pkg.DownloadVideoAudio(args[0], name, extension, true)
 		} else if downloadMuted {
-			pkg.DownloadVideoMuted(args[0], name, extension)
+			pkg.DownloadVideoMuted(args[0], name, extension, true)
 		} else {
-			pkg.DownloadVideo(args[0], name, extension)
+			pkg.DownloadVideo(args[0], name, extension, true)
 		}
 	},
 }
